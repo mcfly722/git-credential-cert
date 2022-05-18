@@ -9,7 +9,14 @@ namespace git_credential_cert
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("arguments:");
+            string line;
+            while ((line = Console.ReadLine()) != null)
+            {
+                MessageBoxButtons buttons1 = MessageBoxButtons.YesNo;
+                 MessageBox.Show(line, "", buttons1);
+            }
+
+            //Console.WriteLine("arguments:");
             
 
             string message = string.Join(",", args);
