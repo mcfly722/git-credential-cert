@@ -26,4 +26,3 @@ git config --global --unset credential.helper
 ```
 del "C:\Program Files\Git\mingw64\libexec\git-core\git-credential-cert.exe"
 ```
-test1
