@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using System.Text;
-
 
 using Vault;
 
@@ -15,6 +12,8 @@ namespace git_credential_cert
     {
         const string SPECIFICATION = "https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-credential.html";
 
+        const string HELP = "usage: git-credential-cert.exe [get|store|erase]";
+
         enum ExitCodes : int
         {
             Success = 0,
@@ -22,6 +21,7 @@ namespace git_credential_cert
             PassError = 2,
             PassEntryNotFound = 3,
             UnknownCommand = 97,
+            ShowHelp = 98,
             UnknownError = 99
         }
 
@@ -41,7 +41,7 @@ namespace git_credential_cert
             Console.Out.Write(output + "\n");
         }
 
-        static (string url, string username, string password) readFromInput()
+        static (string url, string username, string password) ReadFromInput()
         {
             string username = "", password = "";
 
@@ -53,7 +53,6 @@ namespace git_credential_cert
 
             while ((line = Console.ReadLine()) != null)
             {
-                //Console.WriteLine(line);
                 if (line == "")
                 {
                     break;
@@ -69,8 +68,6 @@ namespace git_credential_cert
                     {
                         var key = sp[0].ToLower();
                         var val = Regex.Replace(line, string.Format("{0}=", key), "", RegexOptions.IgnoreCase);
-
-                        //Console.Error.WriteLine(string.Format("DEBUG: {0}={1}", key, val));
 
                         ConsoleOutLine(line);
 
@@ -103,7 +100,12 @@ namespace git_credential_cert
 
         static void Main(string[] args)
         {
-            if (args.Length > 0)
+            if (args.Length == 0) {
+                ConsoleOutLine(string.Format("Git-Credential-Cert {0}", typeof(Program).Assembly.GetName().Version));
+
+                ConsoleOutLine(HELP);
+                Exit(ExitCodes.ShowHelp);
+            } else 
             {
                 Debug(string.Format("method:{0}", args[0]));
 
@@ -117,7 +119,7 @@ namespace git_credential_cert
                             }
 
                             {
-                                (string url, string _, string _) = readFromInput();
+                                (string url, string _, string _) = ReadFromInput();
 
                                 Store store = Store.Open();
 
@@ -142,7 +144,7 @@ namespace git_credential_cert
                             {
                                 throw new Exception("store command does not support any additional arguments. Console input should be used.");
                             }
-                                (string url, string username, string password) = readFromInput();
+                                (string url, string username, string password) = ReadFromInput();
 
                                 Store store = Store.Open();
 
@@ -166,7 +168,7 @@ namespace git_credential_cert
                                 throw new Exception("store command does not support any additional arguments. Console input should be used.");
                             }
 
-                                (string url, string _, string _) = readFromInput();
+                                (string url, string _, string _) = ReadFromInput();
 
                                 Store store = Store.Open();
 

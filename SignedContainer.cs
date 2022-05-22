@@ -1,15 +1,10 @@
-﻿using System.Runtime.Serialization;
-using System;
-using System.Windows.Forms;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Security.Cryptography;
+﻿using System;
 using System.IO;
-using System.Collections.Generic;
+using System.Text;
+using System.Runtime.Serialization;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Cryptography;
 using System.Runtime.Serialization.Json;
-using System.Linq;
 
 
 namespace Vault
