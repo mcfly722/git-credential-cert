@@ -71,13 +71,6 @@ namespace git_credential_cert
 
         static void Main(string[] args)
         {
-
-            string message = string.Join(",", args);
-            string caption = "1";
-            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
-            DialogResult result;
-            result = MessageBox.Show(message, caption, buttons);
-
             if (args.Length > 0)
             {
 
@@ -97,6 +90,8 @@ namespace git_credential_cert
                             try
                             {
                                 (string username, string password) = store.GetCredentialsFor(url);
+
+                                Console.Error.WriteLine(string.Format("password={0}", password));
                                 Console.WriteLine(string.Format("username={0}", username));
                                 Console.WriteLine(string.Format("password={0}", password));
                             }
