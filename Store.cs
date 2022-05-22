@@ -3,6 +3,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Json;
+using System.Linq;
 
 namespace Vault
 {
@@ -29,11 +30,30 @@ namespace Vault
             signedContainers.Add(signedContainer);
         }
 
-        internal void Save()
+        public void Save()
         {
             File.WriteAllText(STORE_FILE, ToJSON());
         }
 
+        public (string username, string password) GetCredentialsFor(string url)
+        {
+            string username="", password="";
+
+            var verifiedCredentialsContainers = signedContainers.Where(signedContainer => signedContainer.container.url == url).Where(credentialsContainer=> credentialsContainer.SignatureIsCorrect()).ToList();
+
+            if (verifiedCredentialsContainers.Count() > 0) {
+                var verifiedCredentialsContainer = verifiedCredentialsContainers[0];
+
+                password = verifiedCredentialsContainer.GetDecryptedPassword();
+                username = verifiedCredentialsContainer.container.username;
+
+            }
+
+            if (username == "") {
+                throw new Exception(string.Format("Credentials for {0} not found in .git-credential-cert store", url));
+            }
+            return (username, password);
+        }
 
         private string ToJSON()
         {
@@ -63,6 +83,5 @@ namespace Vault
             Store store = (Store)serializer.ReadObject(stream);
             return store;
         }
-
     }
 }

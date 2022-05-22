@@ -70,6 +70,28 @@ namespace Vault
 
         }
 
+        internal X509Certificate2 getCertificate(string thumbprint) {
+            X509Store certsStore = new X509Store("MY", StoreLocation.CurrentUser);
+            certsStore.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
+
+            X509Certificate2Collection collection = (X509Certificate2Collection)certsStore.Certificates.Find(X509FindType.FindByThumbprint, thumbprint, false);
+            if (collection.Count < 1)
+            {
+                throw new Exception(string.Format("Could not found public certificate with thumbprint={0} to check container signature", thumbprint));
+            }
+            return collection[0];
+        }
+
+        internal bool SignatureIsCorrect() {
+            return getCertificate(thumbprint).GetRSAPublicKey().VerifyData((new UTF8Encoding()).GetBytes(container.ToJSON()), System.Convert.FromBase64String(signature), HashAlgorithmName.SHA512, RSASignaturePadding.Pkcs1);
+        }
+
+        internal string GetDecryptedPassword() {
+            return System.Text.Encoding.UTF8.GetString(
+                getCertificate(thumbprint).GetRSAPrivateKey().Decrypt(System.Convert.FromBase64String(container.password), RSAEncryptionPadding.OaepSHA512)
+            );
+        }
+
         internal string ToJSON()
         {
             MemoryStream stream = new MemoryStream();

@@ -12,8 +12,9 @@ namespace git_credential_cert
     {
         const string SPECIFICATION = "https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-credential.html";
 
-        static (string url, string username, string password) readFromInput() {
-            string username="", password="";
+        static (string url, string username, string password) readFromInput()
+        {
+            string username = "", password = "";
 
             UriBuilder uriBuilder = new UriBuilder();
 
@@ -27,16 +28,20 @@ namespace git_credential_cert
                 {
                     break;
                 }
-                else {
+                else
+                {
                     var sp = line.Split('=');
-                    if (sp.Length < 2) {
+                    if (sp.Length < 2)
+                    {
                         throw new Exception(string.Format("incorrect parameter in string : {1}{0}please, check specification {2}", Environment.NewLine, line, SPECIFICATION));
                     }
-                    else {
+                    else
+                    {
                         var key = sp[0].ToLower();
                         var val = Regex.Replace(line, string.Format("{0}=", key), "", RegexOptions.IgnoreCase);
 
-                        switch (key) {
+                        switch (key)
+                        {
                             case "protocol":
                                 uriBuilder.Scheme = val;
                                 break;
@@ -73,18 +78,32 @@ namespace git_credential_cert
             DialogResult result;
             result = MessageBox.Show(message, caption, buttons);
 
-            if (args.Length >0)
+            if (args.Length > 0)
             {
 
-                switch (args[0].ToLower()) {
+                switch (args[0].ToLower())
+                {
                     case "get":
                         if (args.Length > 1)
                         {
                             throw new Exception("get command does not support any additional arguments. Console input should be used.");
                         }
 
+                        {
+                            (string url, string _, string _) = readFromInput();
 
+                            Store store = Store.Open();
 
+                            try
+                            {
+                                (string username, string password) = store.GetCredentialsFor(url);
+                                Console.WriteLine(string.Format("username={0}", username));
+                                Console.WriteLine(string.Format("password={0}", password));
+                            }
+                            catch
+                            { // credentials for url not found
+                            }
+                        }
 
                         break;
                     case "store":
@@ -93,15 +112,17 @@ namespace git_credential_cert
                             throw new Exception("store command does not support any additional arguments. Console input should be used.");
                         }
 
-                        (string url, string username, string password) = readFromInput();
+                        {
+                            (string url, string username, string password) = readFromInput();
 
-                        SignedContainer container = new SignedContainer(url, username, password);
+                            SignedContainer container = new SignedContainer(url, username, password);
 
-                        Store store = Store.Open();
+                            Store store = Store.Open();
 
-                        store.Add(container);
+                            store.Add(container);
 
-                        store.Save();
+                            store.Save();
+                        }
 
                         break;
                     default:
