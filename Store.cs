@@ -26,9 +26,16 @@ namespace Vault
             return FromJSON(json);
         }
 
-        public void Add(SignedContainer signedContainer)
+        public void Add(string url, string username, string password)
         {
-            signedContainers.Add(signedContainer);
+            {
+                var sameContainers = signedContainers.Where(signedContainer => signedContainer.container.url == url);
+                if (sameContainers.Count() > 0) {
+                    throw new Exception(string.Format("Credentials with {0} url already exist. Please, delete it before add new one", url));
+                }
+            }
+
+            signedContainers.Add(new SignedContainer(url, username, password));
         }
 
         public void Remove(string url)
@@ -41,8 +48,10 @@ namespace Vault
             File.WriteAllText(STORE_FILE, ToJSON());
         }
 
-        public (string username, string password) GetCredentialsFor(string url)
+        public (string protocol, string host, string path, string username, string password) GetCredentialsFor(string url)
         {
+            UriBuilder uriBuilder = new UriBuilder(url);
+
             string username = "", password = "";
 
             var verifiedCredentialsContainers = signedContainers.Where(signedContainer => signedContainer.container.url == url).Where(credentialsContainer => credentialsContainer.SignatureIsCorrect()).ToList();
@@ -60,7 +69,11 @@ namespace Vault
             {
                 throw new Exception(string.Format("Credentials for {0} not found in .git-credential-cert store", url));
             }
-            return (username, password);
+
+            var path = uriBuilder.Path;
+            if (path == "/") { path = ""; }
+
+            return (uriBuilder.Scheme, uriBuilder.Host, path, username, password);
         }
 
         private string ToJSON()
