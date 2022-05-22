@@ -15,14 +15,30 @@ namespace git_credential_cert
     {
         const string SPECIFICATION = "https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-credential.html";
 
-        static void Debug(string output) {
+        enum ExitCodes : int
+        {
+            Success = 0,
+            GitInputError = 1,
+            PassError = 2,
+            PassEntryNotFound = 3,
+            UnknownCommand = 97,
+            UnknownError = 99
+        }
+
+        static void Exit(ExitCodes code) {
+            Environment.Exit((int)code);
+        }
+
+
+        static void Debug(string output)
+        {
             //Console.Error.WriteLine(string.Format("DEBUG:{0}", output));
         }
 
         static void ConsoleOutLine(string output)
         {
             Debug(output);
-            Console.Out.Write(output+ "\n");
+            Console.Out.Write(output + "\n");
         }
 
         static (string url, string username, string password) readFromInput()
@@ -89,80 +105,78 @@ namespace git_credential_cert
         {
             if (args.Length > 0)
             {
-                Debug(string.Format("method:{0}",args[0]));
+                Debug(string.Format("method:{0}", args[0]));
 
                 switch (args[0].ToLower())
                 {
                     case "get":
-                        if (args.Length > 1)
                         {
-                            throw new Exception("get command does not support any additional arguments. Console input should be used.");
-                        }
-
-                        {
-                            (string url, string _, string _) = readFromInput();
-
-                            Store store = Store.Open();
-
-                            try
+                            if (args.Length > 1)
                             {
-                                (string protocol, string host, string path, string username, string password) = store.GetCredentialsFor(url);
-                                ConsoleOutLine(string.Format("username={0}", username));
-                                ConsoleOutLine(string.Format("password={0}", password));
-
-                                Environment.ExitCode = 0;
-                                return;
+                                throw new Exception("get command does not support any additional arguments. Console input should be used.");
                             }
-                            catch (Exception e)
-                            { // credentials for url not found
-                                Console.Error.WriteLine(e.Message);
+
+                            {
+                                (string url, string _, string _) = readFromInput();
+
+                                Store store = Store.Open();
+
+                                try
+                                {
+                                    (string protocol, string host, string path, string username, string password) = store.GetCredentialsFor(url);
+                                    ConsoleOutLine(string.Format("username={0}", username));
+                                    ConsoleOutLine(string.Format("password={0}", password));
+
+                                    Exit(ExitCodes.Success);
+                                }
+                                catch (Exception e)
+                                { // credentials for url not found
+                                    Console.Error.WriteLine(e.Message);
+                                }
                             }
                         }
+                        break;
+                    case "store":
+                        {
+                            if (args.Length > 1)
+                            {
+                                throw new Exception("store command does not support any additional arguments. Console input should be used.");
+                            }
+                                (string url, string username, string password) = readFromInput();
 
+                                Store store = Store.Open();
+
+                                try
+                                {
+
+                                    store.Add(url, username, password);
+                                }
+                                catch (Store.CredentialsAlreadyExistsException) { }
+
+                                store.Save();
+
+                                Exit(ExitCodes.Success);
+                        }
                         break;
 
-                    case "store":
-                        
-                        if (args.Length > 1)
-                        {
-                            throw new Exception("store command does not support any additional arguments. Console input should be used.");
-                        }
-                        {
-                            (string url, string username, string password) = readFromInput();
-
-                            Store store = Store.Open();
-
-                            try
-                            {
-
-                                store.Add(url, username, password);
-                            }
-                            catch (Store.CredentialsAlreadyExistsException) { }
-
-                            store.Save();
-
-                            Environment.ExitCode = 0;
-                            return;
-                        }
                     case "erase":
-                        if (args.Length > 1)
                         {
-                            throw new Exception("store command does not support any additional arguments. Console input should be used.");
+                            if (args.Length > 1)
+                            {
+                                throw new Exception("store command does not support any additional arguments. Console input should be used.");
+                            }
+
+                                (string url, string _, string _) = readFromInput();
+
+                                Store store = Store.Open();
+
+                                store.Remove(url);
+
+                                store.Save();
+
+                                Exit(ExitCodes.Success);
                         }
-
-                        {
-                            (string url, string _, string _) = readFromInput();
-
-                            Store store = Store.Open();
-
-                            store.Remove(url);
-
-                            store.Save();
-
-                            Environment.ExitCode = 0;
-                            return;
-                        }
-
+                        break;
                     default:
                         throw new Exception(string.Format("unknown parameter {0}", args[0]));
                 }
