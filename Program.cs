@@ -16,13 +16,12 @@ namespace git_credential_cert
         const string SPECIFICATION = "https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-credential.html";
 
         static void Debug(string output) {
-            Console.Error.WriteLine(string.Format("DEBUG:{0}", output));
+            //Console.Error.WriteLine(string.Format("DEBUG:{0}", output));
         }
 
         static void ConsoleOutLine(string output)
         {
             Debug(output);
-            //Console.WriteLine(output);
             Console.Out.Write(output+ "\n");
         }
 
@@ -128,13 +127,17 @@ namespace git_credential_cert
                         {
                             throw new Exception("store command does not support any additional arguments. Console input should be used.");
                         }
-
                         {
                             (string url, string username, string password) = readFromInput();
 
                             Store store = Store.Open();
 
-                            store.Add(url, username, password);
+                            try
+                            {
+
+                                store.Add(url, username, password);
+                            }
+                            catch (Store.CredentialsAlreadyExistsException) { }
 
                             store.Save();
 

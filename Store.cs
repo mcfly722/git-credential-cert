@@ -26,12 +26,16 @@ namespace Vault
             return FromJSON(json);
         }
 
+        public class CredentialsAlreadyExistsException : Exception {
+            public CredentialsAlreadyExistsException(string message) : base(message) { }
+        }
+
         public void Add(string url, string username, string password)
         {
             {
                 var sameContainers = signedContainers.Where(signedContainer => signedContainer.container.url == url);
                 if (sameContainers.Count() > 0) {
-                    throw new Exception(string.Format("Credentials with {0} url already exist. Please, delete it before add new one", url));
+                    throw new CredentialsAlreadyExistsException(string.Format("Credentials with {0} url already exist. Please, delete it before add new one", url));
                 }
             }
 
