@@ -26,8 +26,14 @@ namespace Vault
             return FromJSON(json);
         }
 
-        public void Add(SignedContainer signedContainer) {
+        public void Add(SignedContainer signedContainer)
+        {
             signedContainers.Add(signedContainer);
+        }
+
+        public void Remove(string url)
+        {
+            signedContainers = signedContainers.Where(signedContainer => signedContainer.container.url != url).ToList();
         }
 
         public void Save()
@@ -37,11 +43,12 @@ namespace Vault
 
         public (string username, string password) GetCredentialsFor(string url)
         {
-            string username="", password="";
+            string username = "", password = "";
 
-            var verifiedCredentialsContainers = signedContainers.Where(signedContainer => signedContainer.container.url == url).Where(credentialsContainer=> credentialsContainer.SignatureIsCorrect()).ToList();
+            var verifiedCredentialsContainers = signedContainers.Where(signedContainer => signedContainer.container.url == url).Where(credentialsContainer => credentialsContainer.SignatureIsCorrect()).ToList();
 
-            if (verifiedCredentialsContainers.Count() > 0) {
+            if (verifiedCredentialsContainers.Count() > 0)
+            {
                 var verifiedCredentialsContainer = verifiedCredentialsContainers[0];
 
                 password = verifiedCredentialsContainer.GetDecryptedPassword();
@@ -49,7 +56,8 @@ namespace Vault
 
             }
 
-            if (username == "") {
+            if (username == "")
+            {
                 throw new Exception(string.Format("Credentials for {0} not found in .git-credential-cert store", url));
             }
             return (username, password);

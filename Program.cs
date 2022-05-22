@@ -106,6 +106,7 @@ namespace git_credential_cert
                         }
 
                         break;
+
                     case "store":
                         if (args.Length > 1)
                         {
@@ -125,6 +126,24 @@ namespace git_credential_cert
                         }
 
                         break;
+                    case "erase":
+                        if (args.Length > 1)
+                        {
+                            throw new Exception("store command does not support any additional arguments. Console input should be used.");
+                        }
+
+                        {
+                            (string url, string _, string _) = readFromInput();
+
+                            Store store = Store.Open();
+
+                            store.Remove(url);
+
+                            store.Save();
+                        }
+
+                        break;
+
                     default:
                         throw new Exception(string.Format("unknown parameter {0}", args[0]));
                 }
