@@ -137,11 +137,11 @@ namespace git_credential_cert
                             store.Add(url, username, password);
 
                             store.Save();
+
+                            Environment.ExitCode = 0;
+                            return;
                         }
-                        
-                        break;
                     case "erase":
-                        /*
                         if (args.Length > 1)
                         {
                             throw new Exception("store command does not support any additional arguments. Console input should be used.");
@@ -155,10 +155,11 @@ namespace git_credential_cert
                             store.Remove(url);
 
                             store.Save();
-                        }
-                        */
 
-                        break;
+                            Environment.ExitCode = 0;
+                            return;
+                        }
+
                     default:
                         throw new Exception(string.Format("unknown parameter {0}", args[0]));
                 }
