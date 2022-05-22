@@ -26,7 +26,8 @@ git config --global --unset credential.helper
 ```
 del "C:\Program Files\Git\mingw64\libexec\git-core\git-credential-cert.exe"
 ```
-<br><br>
+
+------
 #### Tests List: ❌✔
 
 ###### 1. Common
@@ -41,12 +42,15 @@ del "C:\Program Files\Git\mingw64\libexec\git-core\git-credential-cert.exe"
 2.2. 💡 No certs with private key<br>
 2.3. 💡 Fail to encrypt (token ejected)<br>
 2.4. 💡 There are no required parameters<br>
+2.5. 💡 Change token during cert select (should update certs list)<br>
 
 ###### 3. Read existing credentials (GET):
-3.1. 💡 Store has no credential for required url<br>
-3.2. 💡 Trying to add already existing url<br>
-3.3. 💡 Incorrect signature<br>
+3.1. 💡 There are no required parameters<br>
+3.2. 💡 Store has no credential for required url<br>
+3.3. 💡 Cert for signature check and decryption does not exist<br>
+3.4. 💡 Cert for signature check and decryption exist, but have no private key<br>
+3.5. 💡 Trying to add already existing url<br>
+3.6. 💡 Incorrect signature<br>
 
 ###### 4. Remove existing credentials (ERASE):
-4.1. 💡 Unknown unsupported command<br>
-4.2. 💡 Trying to remove not existing credentials<br>
+4.1. 💡 Trying to remove not existing credentials<br>
