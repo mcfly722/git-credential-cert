@@ -2,16 +2,68 @@
 using System.Windows.Forms;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Security.Cryptography;
 
 using Vault;
 
 namespace git_credential_cert
 {
+
     class Program
     {
+        const string SPECIFICATION = "https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-credential.html";
+
+        static (string url, string username, string password) readFromInput() {
+            string username="", password="";
+
+            UriBuilder uriBuilder = new UriBuilder();
+
+            CultureInfo culture = new CultureInfo("en-US");
+
+            string line;
+
+            while ((line = Console.ReadLine()) != null)
+            {
+                if (line == "")
+                {
+                    break;
+                }
+                else {
+                    var sp = line.Split('=');
+                    if (sp.Length < 2) {
+                        throw new Exception(string.Format("incorrect parameter in string : {1}{0}please, check specification {2}", Environment.NewLine, line, SPECIFICATION));
+                    }
+                    else {
+                        var key = sp[0].ToLower();
+                        var val = Regex.Replace(line, string.Format("{0}=", key), "", RegexOptions.IgnoreCase);
+
+                        switch (key) {
+                            case "protocol":
+                                uriBuilder.Scheme = val;
+                                break;
+                            case "host":
+                                uriBuilder.Host = val;
+                                break;
+                            case "path":
+                                uriBuilder.Path = val;
+                                break;
+                            case "username":
+                                username = val;
+                                break;
+                            case "password":
+                                password = val;
+                                break;
+                            default:
+                                throw new Exception(string.Format("cannot parse input parameter: {1}{0}please, check specification {2}", Environment.NewLine, line, SPECIFICATION));
+                        }
+                    }
+                }
+            }
+
+            return (uriBuilder.ToString(), username, password);
+        }
+
+
+
         static void Main(string[] args)
         {
 
@@ -24,99 +76,36 @@ namespace git_credential_cert
             if (args.Length >0)
             {
 
-
-
-                // https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-credential.html
-                if (args[0].ToLower() == "get")
-                {
-                    if (args.Length > 1) {
-                        throw new Exception("get command does not support any arguments");
-                    }
-                    
-
-                    UriBuilder uriBuilder = new UriBuilder();
-                    CultureInfo culture = new CultureInfo("en-US");
-
-                    string line;
-
-                    while ((line = Console.ReadLine()) != null)
-                    {
-                        if (line.StartsWith("protocol=", true, culture))
+                switch (args[0].ToLower()) {
+                    case "get":
+                        if (args.Length > 1)
                         {
-                            uriBuilder.Scheme = Regex.Replace(line, "protocol=", "", RegexOptions.IgnoreCase);
-                            continue;
+                            throw new Exception("get command does not support any additional arguments. Console input should be used.");
                         }
 
-                        if (line.StartsWith("host=", true, culture))
+
+
+
+                        break;
+                    case "store":
+                        if (args.Length > 1)
                         {
-                            uriBuilder.Host = Regex.Replace(line, "host=", "", RegexOptions.IgnoreCase);
-                            continue;
+                            throw new Exception("store command does not support any additional arguments. Console input should be used.");
                         }
 
-                        if (line.StartsWith("path=", true, culture))
-                        {
-                            uriBuilder.Path = Regex.Replace(line, "path=", "", RegexOptions.IgnoreCase);
-                            continue;
-                        }
+                        (string url, string username, string password) = readFromInput();
 
-                        if (line == "")
-                        {
-                            break;
-                        }
+                        SignedContainer container = new SignedContainer(url, username, password);
 
-                        throw new Exception(string.Format("cannot parse input parameter: {1}{0}please, check specification {2}",Environment.NewLine, line, "https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-credential.html"));
-                    }
+                        Store store = Store.Open();
 
+                        store.Add(container);
 
+                        store.Save();
 
-                    MessageBoxButtons buttons1 = MessageBoxButtons.YesNo;
-                    MessageBox.Show(uriBuilder.ToString(), "", buttons1);
-
-                }
-
-                if (args[0].ToLower() == "add") {
-                    if (args.Length != 2) {
-                        throw new Exception("add command supports only ine parameter, it is URL");
-                    }
-
-                    UriBuilder uriBuilder = new UriBuilder(args[1]);
-                    CultureInfo culture = new CultureInfo("en-US");
-
-                    Console.Write("Enter username: ");
-                    string username = Console.ReadLine();
-                    string password = "";
-                    Console.Write("Enter password: ");
-                    ConsoleKeyInfo keyInfo;
-
-                    do
-                    {
-                        keyInfo = Console.ReadKey(true);
-                        // Skip if Backspace or Enter is Pressed
-                        if (keyInfo.Key != ConsoleKey.Backspace && keyInfo.Key != ConsoleKey.Enter)
-                        {
-                            password += keyInfo.KeyChar;
-                            Console.Write("*");
-                        }
-                        else
-                        {
-                            if (keyInfo.Key == ConsoleKey.Backspace && password.Length > 0)
-                            {
-                                // Remove last charcter if Backspace is Pressed
-                                password = password.Substring(0, (password.Length - 1));
-                                Console.Write("\b \b");
-                            }
-                        }
-                    } // Stops Getting Password Once Enter is Pressed
-                    while (keyInfo.Key != ConsoleKey.Enter);
-                    Console.WriteLine("");
-
-                    SignedContainer container = new SignedContainer(uriBuilder.ToString(), username,password);
-
-                    Store store = Store.Open();
-
-                    store.Add(container);
-
-                    store.Save();
+                        break;
+                    default:
+                        throw new Exception(string.Format("unknown parameter {0}", args[0]));
                 }
 
             }
