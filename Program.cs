@@ -15,8 +15,17 @@ namespace git_credential_cert
         static void Main(string[] args)
         {
 
+            string message = string.Join(",", args);
+            string caption = "1";
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            DialogResult result;
+            result = MessageBox.Show(message, caption, buttons);
+
             if (args.Length >0)
             {
+
+
+
                 // https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-credential.html
                 if (args[0].ToLower() == "get")
                 {
@@ -110,13 +119,6 @@ namespace git_credential_cert
                     store.Save();
                 }
 
-
-                string message = string.Join(",", args);
-                string caption = "1";
-                MessageBoxButtons buttons = MessageBoxButtons.YesNo;
-                DialogResult result;
-
-                result = MessageBox.Show(message, caption, buttons);
             }
         }
     }
