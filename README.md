@@ -17,18 +17,6 @@ git config --global credential.helper cert
 ```
 
 ------
-#### Generate certificate
-Generate certificate with private key for password encryption and signing data in store:
-```
-makecert.exe -pe -r -a sha1 -len 2048 -n "CN=<specify here your own cert name>" -eku "1.3.6.1.5.5.7.3.4" -sky exchange -sv cert.pvk cert.cer
-```
-```
-pvk2pfx.exe -pvk cert.pvk -spc cert.cer -pfx cert.pfx
-```
-Import certificate to hardware token using SafeNet Authentication Client or any other third-party software.<br>
-During import, choose pfx file and enter empty password.
-
-------
 #### Uninstall:
 
 💡ToDo
@@ -61,7 +49,5 @@ During import, choose pfx file and enter empty password.
 ###### 4. Remove existing credentials (ERASE):
 4.1. 💡 Trying to remove not existing credentials<br>
 ###### 5. Other
-5.1. 💡 Working from Visual Studio Code
+5.1. ✔ Working from Visual Studio Code
 5.2. 💡 Working from Visual Studio
-
-test123
