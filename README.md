@@ -49,5 +49,5 @@ git config --global credential.helper cert
 ###### 4. Remove existing credentials (ERASE):
 4.1. 💡 Trying to remove not existing credentials<br>
 ###### 5. Other
-5.1. 💡 Working from Visual Studio Code
+5.1. ✔ Working from Visual Studio Code
 5.2. 💡 Working from Visual Studio
