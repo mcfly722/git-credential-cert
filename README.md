@@ -45,11 +45,11 @@ During import, choose pfx file and enter empty password for importing. Do not fo
 1.5. 💡 Writing store file exception<br>
 
 ###### 2. Add new credentials (STORE):
-2.1. 💡 Create new store, file does not exist<br>
+2.1. ✔ Create new store, file does not exist<br>
 2.2. 💡 No certs with private key<br>
 2.3. 💡 Fail to encrypt (token ejected)<br>
 2.4. 💡 There are no required parameters<br>
-2.5. 💡 Change token during cert select (should update certs list)<br>
+2.5. ❌ Change token during cert select (should update certs list)<br>
 
 ###### 3. Read existing credentials (GET):
 3.1. 💡 There are no required parameters<br>
@@ -61,6 +61,7 @@ During import, choose pfx file and enter empty password for importing. Do not fo
 
 ###### 4. Remove existing credentials (ERASE):
 4.1. 💡 Trying to remove not existing credentials<br>
+
 ###### 5. Other
 5.1. ✔ Working from Visual Studio Code<br>
 5.2. 💡 Working from Visual Studio
