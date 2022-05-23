@@ -7,19 +7,19 @@ Status: <b>working alpha ✔</b><br><br>
 ------
 #### Requirements:
 1. installed git
-2. certificate with private key in MY or from hardware token
+2. certificate with private key on hardware token
 3. .NET Framework 4.7.1 or higher
 4. Visual Studio 2013 to build binary from sources
 ------
 #### Installation:
 1. Copy <b>git-credential-cert.exe</b> to <b>C:\Program Files\Git\mingw64\libexec\git-core </b> folder<br>
-2. Specify git-credential-cert as git credential helper:
+2. Specify <b>git-credential-cert</b> as git credential helper:
 ```
 git config --global credential.helper cert
 ```
 ------
 #### Generate certificate
-Generate certificate with private key for password encryption and signing data in store:
+Generate certificate with private key for token encryption and signing credentials data in store:
 ```
 makecert.exe -pe -r -a sha1 -len 2048 -n "CN=<specify here your own cert name>" -eku "1.3.6.1.5.5.7.3.4" -sky exchange -sv cert.pvk cert.cer
 ```
