@@ -5,19 +5,28 @@ Status: <b>working alpha ✔</b><br><br>
 ![](https://github.com/mcfly722/git-credential-cert/blob/main/doc/howTo.gif)
 
 ------
-#### Requirements:
+#### Requirements
 1. installed git
 2. certificate with private key on hardware token
 3. .NET Framework 4.7.1 or higher
 4. Visual Studio 2013 to build binary from sources
 ------
-#### Installation:
+#### Installation
 1. Copy <b>git-credential-cert.exe</b> to <b>C:\Program Files\Git\mingw64\libexec\git-core </b> folder<br>
 2. Specify <b>git-credential-cert</b> as git credential helper:
 ```
 git config --global credential.helper cert
 ```
 3. Don't forget to delete your credentials from Windows Credential Manager and all other places where it is not in safe<br>
+------
+#### Configuring for Visual Studio
+For <b>Visual Studio</b> it is required to specify this helper in <b>%USERPROFILE%\\.gitconfig</b> file<br><br>
+You can add it like this:<br>
+```
+[credential]
+	helper=C:\\\\Program\\ Files\\\\Git\\\\mingw64\\\\libexec\\\\git-core\\\\git-credential-cert.exe
+```
+
 ------
 #### Generate certificate
 Generate certificate with private key for token encryption and signing credentials data in store:
@@ -30,13 +39,14 @@ pvk2pfx.exe -pvk cert.pvk -spc cert.cer -pfx cert.pfx
 Import certificate to hardware token using SafeNet Authentication Client or any other third-party software.<br>
 During import, choose pfx file and enter empty password for importing. Do not forget to delete private key from your disk.<br>
 
+
 ------
-#### Uninstall:
+#### Uninstall
 
 💡ToDo
 
 ------
-#### Tests List: ❌✔
+#### List Of Tests
 
 ###### 1. Common
 1.1. 💡 Incorrect method<br>
