@@ -72,7 +72,7 @@ namespace Vault
             X509Certificate2Collection collection = (X509Certificate2Collection)certsStore.Certificates.Find(X509FindType.FindByThumbprint, thumbprint, false);
             if (collection.Count < 1)
             {
-                throw new Exception(string.Format("Could not found public certificate with thumbprint={0} to check container signature", thumbprint));
+                throw new Exception(string.Format("Could not found certificate with thumbprint={0} to check container signature", thumbprint));
             }
             return collection[0];
         }

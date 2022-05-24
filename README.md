@@ -17,6 +17,7 @@ Status: <b>working alpha ✔</b><br><br>
 ```
 git config --global credential.helper cert
 ```
+3. Don't forget to delete your credentials from Windows Credential Manager and all other places where it is not in safe<br>
 ------
 #### Generate certificate
 Generate certificate with private key for token encryption and signing credentials data in store:
@@ -54,7 +55,7 @@ During import, choose pfx file and enter empty password for importing. Do not fo
 ###### 3. Read existing credentials (GET):
 3.1. 💡 There are no required parameters<br>
 3.2. 💡 Store has no credential for required url<br>
-3.3. 💡 Cert for signature check and decryption does not exist<br>
+3.3. ✔ Cert for signature and decryption not found<br>
 3.4. 💡 Cert for signature check and decryption exist, but have no private key<br>
 3.5. 💡 Trying to add already existing url<br>
 3.6. 💡 Incorrect signature<br>
