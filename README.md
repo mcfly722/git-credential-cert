@@ -64,4 +64,4 @@ During import, choose pfx file and enter empty password for importing. Do not fo
 
 ###### 5. Other
 5.1. ✔ Working from Visual Studio Code<br>
-5.2. 💡 Working from Visual Studio
+5.2. ✔ Working from Visual Studio
