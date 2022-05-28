@@ -65,9 +65,9 @@ git-credential-cert.exe erase <URL>
 #### List Of Tests
 
 ###### 1. Common
-1.1. 💡 Incorrect method<br>
-1.2. 💡 Input has no key=value format<br>
-1.3. 💡 Input has unknown key<br>
+1.1. ✔ Incorrect method<br>
+1.2. ✔ Input has no key=value format<br>
+1.3. ✔ Input has unknown key<br>
 1.4. 💡 Store file corrupted<br>
 1.5. 💡 Writing store file exception<br>
 

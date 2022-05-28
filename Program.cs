@@ -12,7 +12,7 @@ namespace git_credential_cert
     {
         const string SPECIFICATION = "https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-credential.html";
 
-        const string HELP = "usage: git-credential-cert.exe [get|store|erase]";
+        const string HELP = "usage: git-credential-cert.exe [get|store|list|erase]";
 
         enum ExitCodes : int
         {
@@ -25,11 +25,13 @@ namespace git_credential_cert
             UnknownError = 99
         }
 
-        static void Exit(ExitCodes code) {
+        static void Exit(ExitCodes code)
+        {
             Environment.Exit((int)code);
         }
 
-        static void ThrowPanic(string msg, ExitCodes code) {
+        static void ThrowPanic(string msg, ExitCodes code)
+        {
             Console.Error.WriteLine(msg);
             Exit(code);
         }
@@ -66,7 +68,7 @@ namespace git_credential_cert
                     var sp = line.Split('=');
                     if (sp.Length < 2)
                     {
-                        throw new Exception(string.Format("incorrect parameter in string : {1}{0}please, check specification {2}", Environment.NewLine, line, SPECIFICATION));
+                        ThrowPanic(string.Format("incorrect parameter in string : {1}{0}please, check specification {2}", Environment.NewLine, line, SPECIFICATION), ExitCodes.GitInputError);
                     }
                     else
                     {
@@ -93,7 +95,8 @@ namespace git_credential_cert
                                 password = val;
                                 break;
                             default:
-                                throw new Exception(string.Format("cannot parse input parameter: {1}{0}please, check specification {2}", Environment.NewLine, line, SPECIFICATION));
+                                ThrowPanic(string.Format("incorrect input parameter: {1}{0}please, check specification {2}", Environment.NewLine, key, SPECIFICATION), ExitCodes.GitInputError);
+                                break;
                         }
                     }
                 }
@@ -104,12 +107,14 @@ namespace git_credential_cert
 
         static void Main(string[] args)
         {
-            if (args.Length == 0) {
+            if (args.Length == 0)
+            {
                 ConsoleOutLine(string.Format("Git-Credential-Cert {0}", typeof(Program).Assembly.GetName().Version));
 
                 ConsoleOutLine(HELP);
                 Exit(ExitCodes.ShowHelp);
-            } else 
+            }
+            else
             {
                 Debug(string.Format("method:{0}", args[0]));
 
@@ -119,7 +124,7 @@ namespace git_credential_cert
                         {
                             if (args.Length > 1)
                             {
-                                throw new Exception("get command does not support any additional arguments. Console input should be used.");
+                                ThrowPanic("get command does not support any additional arguments. Console input should be used.", ExitCodes.GitInputError);
                             }
 
                             {
@@ -146,38 +151,40 @@ namespace git_credential_cert
                         {
                             if (args.Length > 1)
                             {
-                                throw new Exception("store command does not support any additional arguments. Console input should be used.");
+                                ThrowPanic("store command does not support any additional arguments. Console input should be used.", ExitCodes.GitInputError);
                             }
-                                (string url, string username, string password) = ReadFromInput();
+                            (string url, string username, string password) = ReadFromInput();
 
-                                Store store = Store.Open();
+                            Store store = Store.Open();
 
-                                try
-                                {
+                            try
+                            {
 
-                                    store.Add(url, username, password);
-                                }
-                                catch (Store.CredentialsAlreadyExistsException) { }
+                                store.Add(url, username, password);
+                            }
+                            catch (Store.CredentialsAlreadyExistsException) { }
 
-                                store.Save();
+                            store.Save();
 
-                                Exit(ExitCodes.Success);
+                            Exit(ExitCodes.Success);
                         }
                         break;
-                    case "list": {
+                    case "list":
+                        {
                             if (args.Length > 1)
                             {
                                 ThrowPanic("list command does not support any additional arguments", ExitCodes.UnknownCommand);
                             }
 
                             Store store = Store.Open();
-                            store.GetList().ForEach(signedContainer=> { Console.Out.WriteLine(string.Format("{0}\t{1}",signedContainer.GetURL(),signedContainer.GetUserName())); });
+                            store.GetList().ForEach(signedContainer => { Console.Out.WriteLine(string.Format("{0}\t{1}", signedContainer.GetURL(), signedContainer.GetUserName())); });
                             break;
                         }
                     case "erase":
                         {
                             Store store = Store.Open();
-                            switch (args.Length) {
+                            switch (args.Length)
+                            {
                                 case 1: // read url from input
                                     {
                                         (string url, string _, string _) = ReadFromInput();
