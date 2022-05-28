@@ -17,6 +17,11 @@ namespace Vault
         public CouldNotFoundCredentialsException(string message) : base(message) { }
     }
 
+    public class SignatureIsIncorrectException : Exception
+    {
+        public SignatureIsIncorrectException(string message) : base(message) { }
+    }
+
     [DataContract]
     public class Store
     {
@@ -36,7 +41,8 @@ namespace Vault
             return FromJSON(json);
         }
 
-        public List<SignedContainer> GetList() {
+        public List<SignedContainer> GetList()
+        {
             return signedContainers;
         }
 
@@ -44,7 +50,8 @@ namespace Vault
         {
             {
                 var sameContainers = signedContainers.Where(signedContainer => signedContainer.container.url == url);
-                if (sameContainers.Count() > 0) {
+                if (sameContainers.Count() > 0)
+                {
                     throw new CredentialsAlreadyExistsException(string.Format("Credentials with {0} url already exist. Please, delete it before add new one", url));
                 }
             }
@@ -55,7 +62,8 @@ namespace Vault
         public void Remove(string url)
         {
             var urls = signedContainers.Select(signedContainer => signedContainer.container.url).ToList();
-            if (!urls.Contains(url)) {
+            if (!urls.Contains(url))
+            {
                 throw new CouldNotFoundCredentialsException(string.Format("could not found credentials for url={0}", url));
             }
 
@@ -73,15 +81,21 @@ namespace Vault
 
             string username = "", password = "";
 
-            var verifiedCredentialsContainers = signedContainers.Where(signedContainer => signedContainer.container.url == url).Where(credentialsContainer => credentialsContainer.SignatureIsCorrect()).ToList();
+            var credentialsContainers = signedContainers.Where(signedContainer => signedContainer.container.url == url).ToList();
 
-            if (verifiedCredentialsContainers.Count() > 0)
+            if (credentialsContainers.Count() > 0)
             {
-                var verifiedCredentialsContainer = verifiedCredentialsContainers[0];
-
-                password = verifiedCredentialsContainer.GetDecryptedPassword();
-                username = verifiedCredentialsContainer.container.username;
-
+                var credentialsContainer = credentialsContainers[0];
+                if (!credentialsContainer.SignatureIsCorrect())
+                {
+                    throw new SignatureIsIncorrectException(string.Format("signature for url={0} credentials is incorrect", url));
+                }
+                else
+                {
+                    var verifiedCredentialsContainer = credentialsContainer;
+                    password = verifiedCredentialsContainer.GetDecryptedPassword();
+                    username = verifiedCredentialsContainer.container.username;
+                }
             }
 
             if (username == "")
