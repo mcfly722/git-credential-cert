@@ -47,7 +47,7 @@ git push
 Git helper checks your database (<b>%USERPROFILE%\\git-credential-cert</b> file), and if there are no existing credentials for current URL, it will ask for the username and password to store it.
 
 ------
-#### Listing of existing credentials
+#### List of existing credentials
 ```
 git-credential-cert.exe list
 ```
@@ -89,7 +89,7 @@ git-credential-cert.exe delete <URL>
 4.1. ✔ List credentials (URL + UserName + Cert.Subject + Cert.Thumbprint)<br>
 
 ###### 5. Remove existing credentials from git (ERASE):
-5.1. 💡 Trying to remove not existing credentials<br>
+5.1. ✔ Trying to remove not existing credentials<br>
 
 ###### 6. Remove existing credentials from command line (DELETE):
 6.1. ✔ Trying to remove not existing credentials<br>
