@@ -31,6 +31,15 @@ namespace Vault
             return container.username;
         }
 
+        public string GetCertificateThumbprint()
+        {
+            return thumbprint;
+        }
+
+        public string GetCertificateSubject()
+        {
+            return container.certificateSubject;
+        }
 
         public SignedContainer(string url, string username, string password) {
 
