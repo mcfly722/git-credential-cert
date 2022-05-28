@@ -51,6 +51,10 @@ namespace Vault
             return container.certificateSubject;
         }
 
+        public DateTime GetCreatedDateTime() {
+            return container.created;
+        }
+
         public SignedContainer(UriBuilder url, string username, string password)
         {
 

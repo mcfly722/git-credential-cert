@@ -86,7 +86,7 @@ git-credential-cert.exe delete <URL>
 3.5. ✔ Incorrect signature<br>
 
 ###### 4. List of existing credentials (LIST):
-4.1. ✔ List credentials (URL + UserName + Cert.Subject + Cert.Thumbprint)<br>
+4.1. ✔ List credentials (URL + UserName + Cert.Subject + Cert.Thumbprint + Created DateTime)<br>
 
 ###### 5. Remove existing credentials from git (ERASE):
 5.1. ✔ Trying to remove not existing credentials<br>

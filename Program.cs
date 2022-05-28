@@ -192,11 +192,13 @@ namespace git_credential_cert
                             Store store = Store.Open();
                             store.GetList().ForEach(signedContainer =>
                             {
-                                Console.Out.WriteLine(string.Format("{0}\t{1}\t{2}\t{3}",
+                                Console.Out.WriteLine(string.Format("{0}\t{1}\t{2}\t{3}\t{4}",
                                     signedContainer.GetURL(),
                                     signedContainer.GetUserName(),
                                     signedContainer.GetCertificateSubject(),
-                                    signedContainer.GetCertificateThumbprint())
+                                    signedContainer.GetCertificateThumbprint(),
+                                    signedContainer.GetCreatedDateTime()
+                                    )
                                 );
                             });
                             break;

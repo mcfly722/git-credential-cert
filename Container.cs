@@ -20,11 +20,15 @@ namespace Vault
         [DataMember]
         internal string certificateSubject;
 
+        [DataMember]
+        internal DateTime created;
+
         internal Container(UriBuilder url, string username, string password, string certificateSubject) {
             this.url = url.ToString();
             this.username = username;
             this.password = password;
             this.certificateSubject = certificateSubject;
+            this.created = DateTime.Now;
         }
 
         internal string ToJSON()
