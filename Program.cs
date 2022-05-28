@@ -169,9 +169,12 @@ namespace git_credential_cert
                             {
                                 ThrowPanic(e.Message, ExitCodes.CertNotFound);
                             }
-                            catch (CredentialsAlreadyExistsException e)
+                            catch (CredentialsAlreadyExistsException)
                             {
-                                ThrowPanic(e.Message, ExitCodes.CredentialsAlreadyAdded);
+                                // additional message are not required, git tries to add same credentials with any even success push
+                                //ThrowPanic(e.Message, ExitCodes.CredentialsAlreadyAdded);
+
+                                Exit(ExitCodes.CredentialsAlreadyAdded);
                             }
 
                             store.Save();
