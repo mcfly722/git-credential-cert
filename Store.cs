@@ -7,6 +7,16 @@ using System.Linq;
 
 namespace Vault
 {
+    public class CredentialsAlreadyExistsException : Exception
+    {
+        public CredentialsAlreadyExistsException(string message) : base(message) { }
+    }
+
+    public class CouldNotFoundCredentialsException : Exception
+    {
+        public CouldNotFoundCredentialsException(string message) : base(message) { }
+    }
+
     [DataContract]
     public class Store
     {
@@ -24,10 +34,6 @@ namespace Vault
             }
             var json = File.ReadAllText(STORE_FILE);
             return FromJSON(json);
-        }
-
-        public class CredentialsAlreadyExistsException : Exception {
-            public CredentialsAlreadyExistsException(string message) : base(message) { }
         }
 
         public List<SignedContainer> GetList() {
@@ -48,6 +54,11 @@ namespace Vault
 
         public void Remove(string url)
         {
+            var urls = signedContainers.Select(signedContainer => signedContainer.container.url).ToList();
+            if (!urls.Contains(url)) {
+                throw new CouldNotFoundCredentialsException(string.Format("could not found credentials for url={0}", url));
+            }
+
             signedContainers = signedContainers.Where(signedContainer => signedContainer.container.url != url).ToList();
         }
 

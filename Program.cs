@@ -20,6 +20,8 @@ namespace git_credential_cert
             GitInputError = 1,
             PassError = 2,
             PassEntryNotFound = 3,
+            CertNotFound = 4,
+            CredentialsNotFound = 5,
             UnknownCommand = 97,
             ShowHelp = 98,
             UnknownError = 99
@@ -159,10 +161,15 @@ namespace git_credential_cert
 
                             try
                             {
-
                                 store.Add(url, username, password);
                             }
-                            catch (Store.CredentialsAlreadyExistsException) { }
+                            catch (NoCertWithPrivateKeyException e)
+                            {
+                                ThrowPanic(e.Message, ExitCodes.CertNotFound);
+                            }
+                            catch (CredentialsAlreadyExistsException)
+                            {
+                            }
 
                             store.Save();
 
@@ -177,7 +184,8 @@ namespace git_credential_cert
                             }
 
                             Store store = Store.Open();
-                            store.GetList().ForEach(signedContainer => {
+                            store.GetList().ForEach(signedContainer =>
+                            {
                                 Console.Out.WriteLine(string.Format("{0}\t{1}\t{2}\t{3}",
                                     signedContainer.GetURL(),
                                     signedContainer.GetUserName(),
@@ -189,26 +197,37 @@ namespace git_credential_cert
                         }
                     case "erase":
                         {
-                            Store store = Store.Open();
-                            switch (args.Length)
+                            try
                             {
-                                case 1: // read url from input
-                                    {
-                                        (string url, string _, string _) = ReadFromInput();
-                                        store.Remove(url);
-                                    }
-                                    break;
-                                case 2: // read url from 2nd argument
-                                    {
-                                        store.Remove(args[1]);
-                                    }
-                                    break;
-                                default:
-                                    ThrowPanic("erase command does not support more than two arguments", ExitCodes.GitInputError);
-                                    break;
+                                Store store = Store.Open();
+                                switch (args.Length)
+                                {
+                                    case 1: // read url from input
+                                        {
+                                            (string url, string _, string _) = ReadFromInput();
+                                            store.Remove(url);
+                                        }
+                                        break;
+                                    case 2: // read url from 2nd argument
+                                        {
+                                            store.Remove(args[1]);
+                                        }
+                                        break;
+                                    default:
+                                        ThrowPanic("erase command does not support more than two arguments", ExitCodes.GitInputError);
+                                        break;
+                                }
+                                store.Save();
+                                Exit(ExitCodes.Success);
                             }
-                            store.Save();
-                            Exit(ExitCodes.Success);
+                            catch (CouldNotFoundCredentialsException e)
+                            {
+                                ThrowPanic(e.Message, ExitCodes.CredentialsNotFound);
+                            }
+                            catch (Exception e)
+                            {
+                                ThrowPanic(e.Message, ExitCodes.UnknownError);
+                            }
                         }
                         break;
                     default:

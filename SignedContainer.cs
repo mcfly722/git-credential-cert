@@ -9,6 +9,16 @@ using System.Runtime.Serialization.Json;
 
 namespace Vault
 {
+    public class NoCertWithPrivateKeyException : Exception
+    {
+        public NoCertWithPrivateKeyException(string message) : base(message) { }
+    }
+
+    public class NoCertFoundException : Exception
+    {
+        public NoCertFoundException(string message) : base(message) { }
+    }
+
     [DataContract]
     public class SignedContainer
     {
@@ -64,7 +74,7 @@ namespace Vault
 
             if (scollection.Count == 0)
             {
-                throw new Exception("to sign your credentials you have to choose appropriate certificate with private key");
+                throw new NoCertWithPrivateKeyException("to sign, encrypt and store your credentials you have to choose appropriate certificate with private key");
             }
 
             var certificate = scollection[0];
@@ -74,7 +84,7 @@ namespace Vault
             var csp = certificate.GetRSAPrivateKey();
             if (csp == null)
             {
-                throw new Exception("no valid cert was found");
+                throw new NoCertFoundException("no valid cert was found");
             }
 
             container = new Container(url, username, encryptedPassword, certificate.Subject);
@@ -93,7 +103,7 @@ namespace Vault
             X509Certificate2Collection collection = (X509Certificate2Collection)certsStore.Certificates.Find(X509FindType.FindByThumbprint, thumbprint, false);
             if (collection.Count < 1)
             {
-                throw new Exception(string.Format("Could not found certificate {0}({1}) to check container signature", container.certificateSubject, thumbprint));
+                throw new NoCertFoundException(string.Format("Could not found certificate {0}({1}) to check container signature", container.certificateSubject, thumbprint));
             }
             return collection[0];
         }
