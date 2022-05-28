@@ -39,7 +39,23 @@ pvk2pfx.exe -pvk cert.pvk -spc cert.cer -pfx cert.pfx
 Import certificate to hardware token using SafeNet Authentication Client or any other third-party software.<br>
 During import, choose pfx file and enter empty password for importing. Do not forget to delete private key from your disk.<br>
 
+------
+#### Adding new credentials
+```
+git push
+```
+Git helper checks your database (<b>%USERPROFILE%\\git-credential-cert</b> file), and if there are no existing credentials for current URL, it will ask for the username and password to store it.
 
+------
+#### Listing of existing credentials
+```
+git-credential-cert.exe list
+```
+------
+#### Deleting existing credentials
+```
+git-credential-cert.exe erase <URL>
+```
 ------
 #### Uninstall
 
