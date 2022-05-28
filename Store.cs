@@ -75,13 +75,13 @@ namespace Vault
             File.WriteAllText(STORE_FILE, ToJSON());
         }
 
-        public (string protocol, string host, string path, string username, string password) GetCredentialsFor(string url)
+        public (string protocol, string host, string path, string username, string password) GetCredentialsFor(UriBuilder url)
         {
-            UriBuilder uriBuilder = new UriBuilder(url);
+            UriBuilder uriBuilder = new UriBuilder(url.ToString());
 
             string username = "", password = "";
 
-            var credentialsContainers = signedContainers.Where(signedContainer => signedContainer.container.url == url).ToList();
+            var credentialsContainers = signedContainers.Where(signedContainer => new UriBuilder(signedContainer.container.url).ToString() == url.ToString()).ToList();
 
             if (credentialsContainers.Count() > 0)
             {

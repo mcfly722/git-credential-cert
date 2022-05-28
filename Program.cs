@@ -138,7 +138,7 @@ namespace git_credential_cert
 
                                 try
                                 {
-                                    (string protocol, string host, string path, string username, string password) = store.GetCredentialsFor(url);
+                                    (string protocol, string host, string path, string username, string password) = store.GetCredentialsFor(new UriBuilder(url));
                                     ConsoleOutLine(string.Format("username={0}", username));
                                     ConsoleOutLine(string.Format("password={0}", password));
 
