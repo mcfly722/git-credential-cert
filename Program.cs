@@ -12,7 +12,7 @@ namespace git_credential_cert
     {
         const string SPECIFICATION = "https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-credential.html";
 
-        const string HELP = "usage: git-credential-cert.exe [get|store|list|erase]";
+        const string HELP = "usage: git-credential-cert.exe [get|store|list|erase|delete]";
 
         enum ExitCodes : int
         {
@@ -22,6 +22,7 @@ namespace git_credential_cert
             PassEntryNotFound = 3,
             CertNotFound = 4,
             CredentialsNotFound = 5,
+            ArgumentNotFound = 6,
             UnknownCommand = 97,
             ShowHelp = 98,
             UnknownError = 99
@@ -199,24 +200,34 @@ namespace git_credential_cert
                         {
                             try
                             {
+                                (string url, string _, string _) = ReadFromInput();
                                 Store store = Store.Open();
-                                switch (args.Length)
-                                {
-                                    case 1: // read url from input
-                                        {
-                                            (string url, string _, string _) = ReadFromInput();
-                                            store.Remove(url);
-                                        }
-                                        break;
-                                    case 2: // read url from 2nd argument
-                                        {
-                                            store.Remove(args[1]);
-                                        }
-                                        break;
-                                    default:
-                                        ThrowPanic("erase command does not support more than two arguments", ExitCodes.GitInputError);
-                                        break;
-                                }
+                                store.Remove(url);
+                                store.Save();
+                                Exit(ExitCodes.Success);
+                            }
+                            catch (CouldNotFoundCredentialsException e)
+                            {
+                                ThrowPanic(e.Message, ExitCodes.CredentialsNotFound);
+                            }
+                            catch (Exception e)
+                            {
+                                ThrowPanic(e.Message, ExitCodes.UnknownError);
+                            }
+                        }
+                        break;
+
+                    case "delete":
+                        {
+                            if (args.Length != 2)
+                            {
+                                ThrowPanic("delete command should have url argument", ExitCodes.ArgumentNotFound);
+                            }
+
+                            try
+                            {
+                                Store store = Store.Open();
+                                store.Remove(args[1]);
                                 store.Save();
                                 Exit(ExitCodes.Success);
                             }

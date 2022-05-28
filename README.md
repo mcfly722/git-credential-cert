@@ -54,7 +54,7 @@ git-credential-cert.exe list
 ------
 #### Deleting existing credentials
 ```
-git-credential-cert.exe erase <URL>
+git-credential-cert.exe delete <URL>
 ```
 ------
 #### Uninstall
@@ -88,9 +88,13 @@ git-credential-cert.exe erase <URL>
 ###### 4. List of existing credentials (LIST):
 4.1. ✔ List credentials (URL + UserName + Cert.Subject + Cert.Thumbprint)<br>
 
-###### 5. Remove existing credentials (ERASE):
+###### 5. Remove existing credentials from git (ERASE):
 5.1. 💡 Trying to remove not existing credentials<br>
 
-###### 6. Other
-6.1. ✔ Working from Visual Studio Code<br>
-6.2. ✔ Working from Visual Studio
+###### 6. Remove existing credentials from command line (DELETE):
+6.1. ✔ Trying to remove not existing credentials<br>
+6.2. ✔ No url specified<br>
+
+###### 7. Other
+7.1. ✔ Working from Visual Studio Code<br>
+7.2. ✔ Working from Visual Studio
