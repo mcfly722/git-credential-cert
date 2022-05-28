@@ -30,6 +30,10 @@ namespace Vault
             public CredentialsAlreadyExistsException(string message) : base(message) { }
         }
 
+        public List<SignedContainer> GetList() {
+            return signedContainers;
+        }
+
         public void Add(string url, string username, string password)
         {
             {

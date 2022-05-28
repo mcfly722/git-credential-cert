@@ -21,6 +21,16 @@ namespace Vault
         [DataMember]
         internal string signature;
 
+        public string GetURL()
+        {
+            return container.url;
+        }
+
+        public string GetUserName()
+        {
+            return container.username;
+        }
+
 
         public SignedContainer(string url, string username, string password) {
 

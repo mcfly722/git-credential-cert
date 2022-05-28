@@ -29,6 +29,10 @@ namespace git_credential_cert
             Environment.Exit((int)code);
         }
 
+        static void ThrowPanic(string msg, ExitCodes code) {
+            Console.Error.WriteLine(msg);
+            Exit(code);
+        }
 
         static void Debug(string output)
         {
@@ -160,27 +164,42 @@ namespace git_credential_cert
                                 Exit(ExitCodes.Success);
                         }
                         break;
-
-                    case "erase":
-                        {
+                    case "list": {
                             if (args.Length > 1)
                             {
-                                throw new Exception("store command does not support any additional arguments. Console input should be used.");
+                                ThrowPanic("list command does not support any additional arguments", ExitCodes.UnknownCommand);
                             }
 
-                                (string url, string _, string _) = ReadFromInput();
-
-                                Store store = Store.Open();
-
-                                store.Remove(url);
-
-                                store.Save();
-
-                                Exit(ExitCodes.Success);
+                            Store store = Store.Open();
+                            store.GetList().ForEach(signedContainer=> { Console.Out.WriteLine(string.Format("{0}\t{1}",signedContainer.GetURL(),signedContainer.GetUserName())); });
+                            break;
+                        }
+                    case "erase":
+                        {
+                            Store store = Store.Open();
+                            switch (args.Length) {
+                                case 1: // read url from input
+                                    {
+                                        (string url, string _, string _) = ReadFromInput();
+                                        store.Remove(url);
+                                    }
+                                    break;
+                                case 2: // read url from 2nd argument
+                                    {
+                                        store.Remove(args[1]);
+                                    }
+                                    break;
+                                default:
+                                    ThrowPanic("erase command does not support more than two arguments", ExitCodes.GitInputError);
+                                    break;
+                            }
+                            store.Save();
+                            Exit(ExitCodes.Success);
                         }
                         break;
                     default:
-                        throw new Exception(string.Format("unknown parameter {0}", args[0]));
+                        ThrowPanic(string.Format("unknown argument '{0}'", args[0]), ExitCodes.UnknownCommand);
+                        break;
                 }
 
             }
