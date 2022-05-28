@@ -59,8 +59,11 @@ git-credential-cert.exe delete <URL>
 ------
 #### Uninstall
 
-💡ToDo
-
+1. delete helper:<br>```del "C:\Program Files\Git\mingw64\libexec\git-core\git-credential-cert.exe"```
+2. clear git-credential-cert.exe helper from <b>%USERPROFILE%\\.gitconfig</b><br>
+3. specify your own or previous credential helper (f.e.)<br>
+```git config --global credential.helper manager```
+4. delete git-credential-cert encrypted database (if required):<br>```del "%USERPROFILE%\\.git-credential-cert"```
 ------
 #### List Of Tests
 
