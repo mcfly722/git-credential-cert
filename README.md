@@ -76,7 +76,7 @@ git-credential-cert.exe delete <URL>
 2.2. ✔ No certs with private key<br>
 2.3. ✔ Fail to encrypt (ejected token) - exception<br>
 2.4. ❌ Change token during cert select (should update certs list)<br>
-2.5. 💡 Trying to add already existing url<br>
+2.5. ✔ Trying to add already existing url<br>
 
 ###### 3. Read existing credentials (GET):
 3.1. ✔ There are no required parameters<br>
@@ -97,4 +97,5 @@ git-credential-cert.exe delete <URL>
 
 ###### 7. Other
 7.1. ✔ Working from Visual Studio Code<br>
-7.2. ✔ Working from Visual Studio
+7.2. ✔ Working from Visual Studio<br>
+7.3. ✔ git token revocation (error + erase)<br>
