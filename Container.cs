@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 
@@ -19,13 +20,12 @@ namespace Vault
         [DataMember]
         internal string certificateSubject;
 
-        internal Container(string url, string username, string password, string certificateSubject) {
-            this.url = url;
+        internal Container(UriBuilder url, string username, string password, string certificateSubject) {
+            this.url = url.ToString();
             this.username = username;
             this.password = password;
             this.certificateSubject = certificateSubject;
         }
-
 
         internal string ToJSON()
         {

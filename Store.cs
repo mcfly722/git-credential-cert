@@ -46,28 +46,28 @@ namespace Vault
             return signedContainers;
         }
 
-        public void Add(string url, string username, string password)
+        public Boolean Exist(UriBuilder url)
         {
+            return signedContainers.Where(signedContainer => new UriBuilder(signedContainer.container.url).ToString() == url.ToString()).Count() > 0;
+        }
+
+        public void Add(UriBuilder url, string username, string password)
+        {
+            if (Exist(url))
             {
-                var sameContainers = signedContainers.Where(signedContainer => signedContainer.container.url == url);
-                if (sameContainers.Count() > 0)
-                {
-                    throw new CredentialsAlreadyExistsException(string.Format("Credentials with {0} url already exist. Please, delete it before add new one", url));
-                }
+                throw new CredentialsAlreadyExistsException(string.Format("Credentials with {0} url already exist. Please, delete it before add new one", url));
             }
 
             signedContainers.Add(new SignedContainer(url, username, password));
         }
 
-        public void Remove(string url)
+        public void Remove(UriBuilder url)
         {
-            var urls = signedContainers.Select(signedContainer => signedContainer.container.url).ToList();
-            if (!urls.Contains(url))
-            {
-                throw new CouldNotFoundCredentialsException(string.Format("could not found credentials for url={0}", url));
+            if (!Exist(url)) {
+                throw new CouldNotFoundCredentialsException(string.Format("could not found credentials for url={0}", url.ToString()));
             }
 
-            signedContainers = signedContainers.Where(signedContainer => signedContainer.container.url != url).ToList();
+            signedContainers = signedContainers.Where(signedContainer => new UriBuilder(signedContainer.container.url).ToString() != url.ToString()).ToList();
         }
 
         public void Save()

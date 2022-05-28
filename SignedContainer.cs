@@ -31,9 +31,9 @@ namespace Vault
         [DataMember]
         internal string signature;
 
-        public string GetURL()
+        public UriBuilder GetURL()
         {
-            return container.url;
+            return new UriBuilder(container.url);
         }
 
         public string GetUserName()
@@ -51,7 +51,7 @@ namespace Vault
             return container.certificateSubject;
         }
 
-        public SignedContainer(string url, string username, string password)
+        public SignedContainer(UriBuilder url, string username, string password)
         {
 
             X509Store store = new X509Store("MY", StoreLocation.CurrentUser);

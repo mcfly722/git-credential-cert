@@ -76,14 +76,14 @@ git-credential-cert.exe delete <URL>
 2.2. ✔ No certs with private key<br>
 2.3. ✔ Fail to encrypt (ejected token) - exception<br>
 2.4. ❌ Change token during cert select (should update certs list)<br>
+2.5. 💡 Trying to add already existing url<br>
 
 ###### 3. Read existing credentials (GET):
 3.1. ✔ There are no required parameters<br>
 3.2. ✔ Store has no credential for required url<br>
 3.3. ✔ Cert for signature and decryption not found<br>
-3.4. 💡 Cert for signature check and decryption exist, but have no private key<br>
-3.5. 💡 Trying to add already existing url<br>
-3.6. ✔ Incorrect signature<br>
+3.4. ✔ Cert for signature check exist, but have no private key for decryption<br>
+3.5. ✔ Incorrect signature<br>
 
 ###### 4. List of existing credentials (LIST):
 4.1. ✔ List credentials (URL + UserName + Cert.Subject + Cert.Thumbprint)<br>

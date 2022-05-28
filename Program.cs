@@ -23,6 +23,7 @@ namespace git_credential_cert
             CertNotFound = 4,
             CredentialsNotFound = 5,
             ArgumentNotFound = 6,
+            CredentialsAlreadyAdded = 7,
             UnknownCommand = 97,
             ShowHelp = 98,
             UnknownError = 99
@@ -162,14 +163,15 @@ namespace git_credential_cert
 
                             try
                             {
-                                store.Add(url, username, password);
+                                store.Add(new UriBuilder(url), username, password);
                             }
                             catch (NoCertWithPrivateKeyException e)
                             {
                                 ThrowPanic(e.Message, ExitCodes.CertNotFound);
                             }
-                            catch (CredentialsAlreadyExistsException)
+                            catch (CredentialsAlreadyExistsException e)
                             {
+                                ThrowPanic(e.Message, ExitCodes.CredentialsAlreadyAdded);
                             }
 
                             store.Save();
@@ -202,7 +204,7 @@ namespace git_credential_cert
                             {
                                 (string url, string _, string _) = ReadFromInput();
                                 Store store = Store.Open();
-                                store.Remove(url);
+                                store.Remove(new UriBuilder(url));
                                 store.Save();
                                 Exit(ExitCodes.Success);
                             }
@@ -227,7 +229,7 @@ namespace git_credential_cert
                             try
                             {
                                 Store store = Store.Open();
-                                store.Remove(args[1]);
+                                store.Remove(new UriBuilder(args[1]));
                                 store.Save();
                                 Exit(ExitCodes.Success);
                             }
