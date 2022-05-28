@@ -68,8 +68,8 @@ git-credential-cert.exe erase <URL>
 1.1. ✔ Incorrect method<br>
 1.2. ✔ Input has no key=value format<br>
 1.3. ✔ Input has unknown key<br>
-1.4. 💡 Store file corrupted<br>
-1.5. 💡 Writing store file exception<br>
+1.4. ✔ Store file corrupted - exception with stacktrace<br>
+1.5. ✔ Writing store file exception<br>
 
 ###### 2. Add new credentials (STORE):
 2.1. ✔ Create new store, file does not exist<br>
