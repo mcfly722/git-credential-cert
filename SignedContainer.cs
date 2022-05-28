@@ -41,7 +41,8 @@ namespace Vault
             return container.certificateSubject;
         }
 
-        public SignedContainer(string url, string username, string password) {
+        public SignedContainer(string url, string username, string password)
+        {
 
             X509Store store = new X509Store("MY", StoreLocation.CurrentUser);
             store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
@@ -58,7 +59,7 @@ namespace Vault
             X509Certificate2Collection fcollection = (X509Certificate2Collection)certsOnlyWithPrivateKey.Find(X509FindType.FindByTimeValid, DateTime.Now, false);
             X509Certificate2Collection scollection = X509Certificate2UI.SelectFromCollection(
                 fcollection,
-                "Select certificate to protect your credentials",
+                string.Format("Select certificate to protect your credentials for {0}", url),
                 "Select a certificate from the following list", X509SelectionFlag.SingleSelection);
 
             if (scollection.Count == 0)
@@ -84,23 +85,26 @@ namespace Vault
 
         }
 
-        internal X509Certificate2 getCertificate(string thumbprint) {
+        internal X509Certificate2 getCertificate(string thumbprint)
+        {
             X509Store certsStore = new X509Store("MY", StoreLocation.CurrentUser);
             certsStore.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
 
             X509Certificate2Collection collection = (X509Certificate2Collection)certsStore.Certificates.Find(X509FindType.FindByThumbprint, thumbprint, false);
             if (collection.Count < 1)
             {
-                throw new Exception(string.Format("Could not found certificate with thumbprint={0} to check container signature", thumbprint));
+                throw new Exception(string.Format("Could not found certificate {0}({1}) to check container signature", container.certificateSubject, thumbprint));
             }
             return collection[0];
         }
 
-        internal bool SignatureIsCorrect() {
+        internal bool SignatureIsCorrect()
+        {
             return getCertificate(thumbprint).GetRSAPublicKey().VerifyData((new UTF8Encoding()).GetBytes(container.ToJSON()), System.Convert.FromBase64String(signature), HashAlgorithmName.SHA512, RSASignaturePadding.Pkcs1);
         }
 
-        internal string GetDecryptedPassword() {
+        internal string GetDecryptedPassword()
+        {
             return System.Text.Encoding.UTF8.GetString(
                 getCertificate(thumbprint).GetRSAPrivateKey().Decrypt(System.Convert.FromBase64String(container.password), RSAEncryptionPadding.OaepSHA512)
             );
