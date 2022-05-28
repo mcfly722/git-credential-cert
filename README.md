@@ -58,7 +58,7 @@ Git helper checks your database (<b>%USERPROFILE%\\git-credential-cert</b> file)
 git-credential-cert.exe list
 ```
 ------
-#### Deleting existing credentials
+#### Delete existing credentials
 ```
 git-credential-cert.exe delete <URL>
 ```
