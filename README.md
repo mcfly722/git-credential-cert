@@ -1,7 +1,13 @@
 # git-credential-cert
 Protect git repository auth token with certificate from hardware token
 
-Status: <b>working alpha ✔</b><br><br>
+![Version: version](https://img.shields.io/badge/version-1.0.0.5-success.svg)
+![Stability: release](https://img.shields.io/badge/stability-release-success.svg)
+![Tests: tests](https://img.shields.io/badge/tests-✔21|✘0-success.svg)
+![Platform: platform](https://img.shields.io/badge/platform-win64-lightgray.svg)
+[![License: GPL3.0](https://img.shields.io/badge/License-GPL3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
+
+
 ![](https://github.com/mcfly722/git-credential-cert/blob/main/doc/howTo.gif)
 
 ------
@@ -78,8 +84,7 @@ git-credential-cert.exe delete <URL>
 2.1. ✔ Create new store, file does not exist<br>
 2.2. ✔ No certs with private key<br>
 2.3. ✔ Fail to encrypt (ejected token) - exception<br>
-2.4. ❌ Change token during cert select (should update certs list)<br>
-2.5. ✔ Trying to add already existing url<br>
+2.4. ✔ Trying to add already existing url<br>
 
 ###### 3. Read existing credentials (GET):
 3.1. ✔ There are no required parameters<br>
