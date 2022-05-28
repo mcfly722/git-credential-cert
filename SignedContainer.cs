@@ -67,7 +67,7 @@ namespace Vault
                 throw new Exception("no valid cert was found");
             }
 
-            container = new Container(url, username, encryptedPassword);
+            container = new Container(url, username, encryptedPassword, certificate.Subject);
 
             this.signature = Convert.ToBase64String(csp.SignData((new UTF8Encoding()).GetBytes(container.ToJSON()), HashAlgorithmName.SHA512, RSASignaturePadding.Pkcs1));
 

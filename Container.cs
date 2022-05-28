@@ -16,10 +16,14 @@ namespace Vault
         [DataMember]
         internal string password;
 
-        internal Container(string url, string username, string password) {
+        [DataMember]
+        internal string certificateSubject;
+
+        internal Container(string url, string username, string password, string certificateSubject) {
             this.url = url;
             this.username = username;
             this.password = password;
+            this.certificateSubject = certificateSubject;
         }
 
 
